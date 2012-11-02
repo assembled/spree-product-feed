@@ -5,7 +5,7 @@ xml.rss(:version=>"2.0", "xmlns:g" => "http://base.google.com/ns/1.0"){
     xml.link("http://#{Spree::Config[:site_url]}")
     xml.description("Find out about new products first! You'll always be in the know when new products become available")
     xml.language('en-us')
-    @products.each do |product|
+    Spree::Product.active.each do |product|
       xml.item do
         xml.title(product.name)
         xml.description((product.images.count > 0 ? link_to(image_tag(product.images.first.attachment.url(:product)), product_url(product)) : '') + simple_format(product.description))
@@ -20,7 +20,8 @@ xml.rss(:version=>"2.0", "xmlns:g" => "http://base.google.com/ns/1.0"){
         if product.images.count > 0
           xml.tag!('g:image_link', product.images.first.attachment.url(:large))
         end
-
+        
+        xml.tag!('g:mpn', product.sku)
         xml.tag!('g:price', product.price)
         xml.tag!('g:condition', 'new')
         xml.tag!('g:id', product.id)
