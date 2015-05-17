@@ -20,7 +20,8 @@ xml.rss(:version=>"2.0", "xmlns:g" => "http://base.google.com/ns/1.0"){
         if product.images.count > 0
           xml.tag!('g:image_link', product.images.first.attachment.url(:large))
         end
-        
+        brand = product.detect {|p| p.property.presentation == "Brand"}.value rescue Spree::Config[:site_url]
+        xml.tag!('g:brand', brand)
         xml.tag!('g:mpn', product.sku)
         xml.tag!('g:price', product.price)
         xml.tag!('g:condition', 'new')
